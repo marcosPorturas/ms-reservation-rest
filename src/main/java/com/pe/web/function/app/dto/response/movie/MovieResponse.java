@@ -1,4 +1,4 @@
-package com.pe.web.function.app.dto.response;
+package com.pe.web.function.app.dto.response.movie;
 
 import java.io.Serializable;
 

@@ -1,6 +1,6 @@
 package com.pe.web.function.app.proxy;
 
-import com.pe.web.function.app.dto.response.RoomResponse;
+import com.pe.web.function.app.dto.response.cinema.RoomResponse;
 
 import io.reactivex.Single;
 

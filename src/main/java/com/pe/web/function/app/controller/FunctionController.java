@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pe.web.function.app.dto.request.FunctionRequest;
 import com.pe.web.function.app.dto.response.FunctionResponse;
+import com.pe.web.function.app.dto.response.ReservationResponse;
 import com.pe.web.function.app.service.FunctionService;
 
 import io.reactivex.Single;
@@ -26,6 +27,12 @@ public class FunctionController {
 	public Single<FunctionResponse> getFunctionResponse(@PathVariable("codFunction")
 	Integer codFunction) {
 		return functionService.getFunctionResponse(codFunction);
+	}
+	
+	@GetMapping("/reservation/{codReservation}")
+	public Single<ReservationResponse> getReservationResponse(@PathVariable("codReservation")
+	Integer codReservation) {
+		return functionService.getReservationResponse(codReservation);
 	}
 	
 	@PostMapping("/add")

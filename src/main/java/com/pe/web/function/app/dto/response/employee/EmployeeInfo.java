@@ -1,4 +1,4 @@
-package com.pe.web.function.app.dto.response;
+package com.pe.web.function.app.dto.response.employee;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,12 +11,11 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MovieInfo {
-	
-	private String gender;
-	
-	private String releaseDate;
-	
-	private Integer duration;
+public class EmployeeInfo {
 
+	private String creationDate;
+	private String typeEmployee;
+	private String userValue;
+	private String passwordValue;
+	
 }

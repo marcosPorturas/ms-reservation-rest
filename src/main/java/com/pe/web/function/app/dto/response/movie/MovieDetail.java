@@ -1,4 +1,4 @@
-package com.pe.web.function.app.dto.response;
+package com.pe.web.function.app.dto.response.movie;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,14 +11,12 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SeatResponse {
+public class MovieDetail {
 	
-	private Integer codSeat;
+	private String typeProject;
 	
-	private Integer positionRow;
+	private String statusProject;
 	
-	private Integer positionColumn;
-	
-	private String statusSeat;
+	private String typeCensorship;
 
 }

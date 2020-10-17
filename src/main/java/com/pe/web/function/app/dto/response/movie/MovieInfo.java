@@ -1,4 +1,4 @@
-package com.pe.web.function.app.dto.response;
+package com.pe.web.function.app.dto.response.movie;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,17 +6,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Builder
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MovieDetail {
+public class MovieInfo {
 	
-	private String typeProject;
+	private String gender;
 	
-	private String statusProject;
+	private String releaseDate;
 	
-	private String typeCensorship;
+	private Integer duration;
 
 }

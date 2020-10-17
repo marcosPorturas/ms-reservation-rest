@@ -1,7 +1,9 @@
-package com.pe.web.function.app.dto.response;
+package com.pe.web.function.app.dto.response.cinema;
 
 import java.io.Serializable;
 import java.util.List;
+
+import com.pe.web.function.app.dto.response.InfoCinema;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
