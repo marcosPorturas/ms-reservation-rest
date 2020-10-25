@@ -2,6 +2,7 @@ package com.pe.web.function.app.entity;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,6 +28,7 @@ public class Reservation {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="cod_reservation")
 	private Integer codReservation;
 	
 	private Integer codClient;

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pe.web.function.app.dto.request.FunctionRequest;
+import com.pe.web.function.app.dto.request.ReservationRequest;
 import com.pe.web.function.app.dto.response.FunctionResponse;
 import com.pe.web.function.app.dto.response.ReservationResponse;
 import com.pe.web.function.app.service.FunctionService;
@@ -38,5 +39,10 @@ public class FunctionController {
 	@PostMapping("/add")
 	public Single<FunctionResponse> addFunction(@RequestBody FunctionRequest functionRequest) {
 		return functionService.addFunction(functionRequest);
+	}
+	
+	@PostMapping("/reservation/add")
+	public Single<ReservationResponse> addReservation(@RequestBody ReservationRequest reservationRequest) {
+		return functionService.addReservation(reservationRequest);
 	}
 }

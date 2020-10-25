@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.pe.web.function.app.builder.ConvertBuilderFunction;
 import com.pe.web.function.app.builder.ConvertBuilderReservation;
 import com.pe.web.function.app.dto.request.FunctionRequest;
+import com.pe.web.function.app.dto.request.ReservationRequest;
 import com.pe.web.function.app.dto.response.FunctionResponse;
 import com.pe.web.function.app.dto.response.ReservationResponse;
 import com.pe.web.function.app.dto.response.cinema.RoomResponse;
@@ -44,6 +45,11 @@ public class FunctionServiceImplement implements FunctionService{
 	@Autowired
 	MovieProxy movieProxy;
 	
+	public Function invokeConvertBuilderFunctionEntity(FunctionRequest functionRequest) {
+		ConvertBuilderFunction convert = new ConvertBuilderFunction();
+		return convert.convertToFunctionEntity(functionRequest);
+	}
+	
 	public FunctionResponse invokeConvertBuilderFunctionResponse(Function function,
 			MovieResponse movieResponse,RoomResponse roomResponse) {
 		
@@ -51,15 +57,16 @@ public class FunctionServiceImplement implements FunctionService{
 		return convert.convertToFunctionResponse(function,movieResponse,roomResponse);
 	}
 	
+	public Reservation invokeConvertBuilderReservationEntity(ReservationRequest 
+			reservationRequest) {
+		ConvertBuilderReservation convert = new ConvertBuilderReservation();
+		return convert.convertToReservationEntity(reservationRequest);
+	}
+	
 	public ReservationResponse invokeConvertBuilderReservationResponse(Reservation reservation,
 			ClientResponse clientResponse,EmployeeResponse employeeResponse) {
 		ConvertBuilderReservation convert = new ConvertBuilderReservation();		
 		return convert.convertToReservationResponse(reservation,clientResponse,employeeResponse);
-	}
-	
-	public Function invokeConvertBuilderFunctionEntity(FunctionRequest functionRequest) {
-		ConvertBuilderFunction convert = new ConvertBuilderFunction();
-		return convert.convertToFunctionEntity(functionRequest);
 	}
 	
 	@Override
@@ -118,6 +125,26 @@ public class FunctionServiceImplement implements FunctionService{
 		
 		return Single.zip(singleReservation, singleClient, singleEmployee,
 				(r,c,e)->invokeConvertBuilderReservationResponse(r,c,e));
+	}
+
+	@Override
+	public Single<ReservationResponse> addReservation(ReservationRequest reservationRequest) {
+		// TODO Auto-generated method stub
+		Single<ClientResponse> singleClientResponse = clientProxy
+				.getClientResponse(reservationRequest.getCodClient());
+		
+		Single<EmployeeResponse> singleEmployeeResponse = employeeProxy
+				.getEmployeeResponse(reservationRequest.getCodEmployee());
+		
+		Single<Reservation> singleReservation = Single.just(reservationRequest)
+				.map(this::invokeConvertBuilderReservationEntity)
+				.map(reservationRepository::save)
+				.map(reservation->reservationRepository.findById(reservation.getCodReservation())
+						.orElse(null));
+		
+		return Single.zip(singleReservation, singleEmployeeResponse,singleClientResponse,
+				(r,e,c)->invokeConvertBuilderReservationResponse(r,c,e));
+				
 	} 
 
 }
