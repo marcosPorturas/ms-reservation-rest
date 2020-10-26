@@ -1,24 +1,32 @@
 package com.pe.web.function.app.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.pe.web.function.app.builder.ConvertBuilderDetailReservation;
 import com.pe.web.function.app.builder.ConvertBuilderFunction;
 import com.pe.web.function.app.builder.ConvertBuilderReservation;
 import com.pe.web.function.app.dto.request.FunctionRequest;
 import com.pe.web.function.app.dto.request.ReservationRequest;
+import com.pe.web.function.app.dto.request.SeatRequest;
+import com.pe.web.function.app.dto.response.DetailReservationResponse;
 import com.pe.web.function.app.dto.response.FunctionResponse;
 import com.pe.web.function.app.dto.response.ReservationResponse;
 import com.pe.web.function.app.dto.response.cinema.RoomResponse;
 import com.pe.web.function.app.dto.response.client.ClientResponse;
 import com.pe.web.function.app.dto.response.employee.EmployeeResponse;
 import com.pe.web.function.app.dto.response.movie.MovieResponse;
+import com.pe.web.function.app.entity.DetailReservation;
 import com.pe.web.function.app.entity.Function;
 import com.pe.web.function.app.entity.Reservation;
 import com.pe.web.function.app.proxy.CinemaProxy;
 import com.pe.web.function.app.proxy.ClientProxy;
 import com.pe.web.function.app.proxy.EmployeeProxy;
 import com.pe.web.function.app.proxy.MovieProxy;
+import com.pe.web.function.app.repository.DetailReservationRespository;
 import com.pe.web.function.app.repository.FunctionRepository;
 import com.pe.web.function.app.repository.ReservationRepository;
 
@@ -32,6 +40,9 @@ public class FunctionServiceImplement implements FunctionService{
 	
 	@Autowired
 	ReservationRepository reservationRepository;
+	
+	@Autowired
+	DetailReservationRespository detailReservationRespository;
 	
 	@Autowired
 	EmployeeProxy employeeProxy;
@@ -64,9 +75,20 @@ public class FunctionServiceImplement implements FunctionService{
 	}
 	
 	public ReservationResponse invokeConvertBuilderReservationResponse(Reservation reservation,
-			ClientResponse clientResponse,EmployeeResponse employeeResponse) {
+		ClientResponse clientResponse,EmployeeResponse employeeResponse) {
 		ConvertBuilderReservation convert = new ConvertBuilderReservation();		
 		return convert.convertToReservationResponse(reservation,clientResponse,employeeResponse);
+	}
+	
+	public DetailReservation invokeConvertBuilderDetailReservationEntity(ReservationResponse reservationResponse,
+			SeatRequest seatRequest) {
+		ConvertBuilderDetailReservation convert = new ConvertBuilderDetailReservation();
+		return convert.convertToDetailReservationEntity(reservationResponse, seatRequest);
+	}
+	
+	public DetailReservationResponse invokeConvertBuilderDetailReservationResponse(DetailReservation detailReservation) {
+		ConvertBuilderDetailReservation convert = new ConvertBuilderDetailReservation();
+		return convert.convertToDetailReservationResponse(detailReservation);
 	}
 	
 	@Override
@@ -143,8 +165,31 @@ public class FunctionServiceImplement implements FunctionService{
 						.orElse(null));
 		
 		return Single.zip(singleReservation, singleEmployeeResponse,singleClientResponse,
-				(r,e,c)->invokeConvertBuilderReservationResponse(r,c,e));
-				
-	} 
+				(r,e,c)->invokeConvertBuilderReservationResponse(r,c,e))
+				.doOnSuccess(response->cinemaProxy.updateSeat(reservationRequest.getListSeat()))
+				.doOnSuccess(response->addDetailReservation(response,reservationRequest))
+				.doOnSuccess(response->
+				response.setListDetailReservaion(getListDetailReservationResponse(response))
+				);
+	}
+	
+	private void addDetailReservation(ReservationResponse response,ReservationRequest reservationRequest) {
+		reservationRequest.getListSeat()
+		.forEach(seatRequest->{
+			DetailReservation detailReservation = invokeConvertBuilderDetailReservationEntity
+					(response, seatRequest);
+			detailReservationRespository.save(detailReservation);
+		});
+	}
+	
+	private List<DetailReservationResponse> getListDetailReservationResponse(ReservationResponse response){
+		List<DetailReservation> listDetailReservation = detailReservationRespository
+				.findByCodReservation(response.getCodReservation());
+		List<DetailReservationResponse> listDetailReservationResponse = listDetailReservation
+				.stream()
+				.map(detailReservation->invokeConvertBuilderDetailReservationResponse(detailReservation))
+				.collect(Collectors.toList());
+		return listDetailReservationResponse;
+	}
 
 }

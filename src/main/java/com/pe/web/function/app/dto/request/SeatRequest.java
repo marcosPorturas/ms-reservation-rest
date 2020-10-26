@@ -1,13 +1,20 @@
 package com.pe.web.function.app.dto.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class SeatRequest {
+@AllArgsConstructor
+@NoArgsConstructor
+public class SeatRequest{
 
 	private Integer codSeat;
 	
+	private String statusSeat;
+	
 	private Integer codTypeTicket;
+	
 }
