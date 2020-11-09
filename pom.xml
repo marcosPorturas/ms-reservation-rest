@@ -8,10 +8,10 @@
 		<version>2.0.5.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.pe.web.function</groupId>
-	<artifactId>ms-function-rest</artifactId>
+	<groupId>com.pe.web.reservation</groupId>
+	<artifactId>ms-reservation-rest</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>ms-function-rest</name>
+	<name>ms-reservation-rest</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
